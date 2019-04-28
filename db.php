@@ -26,7 +26,7 @@ class db
     function checkUsername($username) {
         try {
             if ($this->connect()) {
-                $query = mysqli_query($this->con, "SELECT * FROM `user` WHERE username = '$username'");
+                $query = mysqli_query($this->con, "SELECT * FROM `user` WHERE BINARY username = '$username'");
                 $result = mysqli_fetch_assoc($query);
                 if ($result) {
                     $this->disconnect();

@@ -3,6 +3,7 @@ include 'db.php';
 $db = new db();
 session_start();
 
+$loginError = false;
 if (isset($_GET['logout']) and $_GET['logout'] == 1) {
     if ($db->resetSessionTime($_SESSION['userId'])) {
         session_destroy();
@@ -18,6 +19,7 @@ if (isset($_GET['logout']) and $_GET['logout'] == 1) {
         $_SESSION['username'] = $data['username'];
         header('Location: messenger.php');
     }
+    $loginError = true;
 } elseif (isset($_GET['api']) and $_GET['api'] == 'getUser') {
     print_r(json_encode($db->getOnlineUser()));
     return;
@@ -50,10 +52,12 @@ if (isset($_GET['logout']) and $_GET['logout'] == 1) {
                 <input class="col-lg-4 mr-2" type="text" name="username" id="username" placeholder="Your Username" maxlength="20"/>
                 <button class="btn btn-success" id="login">Login</button>
                 <div class="alert alert-danger mt-2" style="display: none">Please enter your username!</div>
+                <?php if ($loginError): ?>
+                    <div class="alert alert-danger mt-2">Your username is wrong!</div>
+                <?php endif; ?>
             </form>
         </div>
     </div>
-    <div class="col-lg-3"></div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

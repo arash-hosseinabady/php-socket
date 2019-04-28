@@ -56,12 +56,6 @@ $users = $db->getUserList();
             width: 60%;
         }
 
-        /*button#send-message {*/
-        /*border: none;*/
-        /*padding: 5px 15px;*/
-        /*background: #11e0fb;*/
-        /*box-shadow: 2px 2px 2px #0000001c;*/
-        /*}*/
     </style>
 </head>
 <body>
@@ -75,7 +69,7 @@ $users = $db->getUserList();
         <div class="form-row">
             <div class="form-inline">
                 <label class="my-1 mr-2 ml-2" for="receiver">send message to:</label>
-                <select class="custom-select my-1 mr-sm-2 mr-lg-5" name="receiver" id="receiver">
+                <select class="custom-select my-1 mr-lg-5" name="receiver" id="receiver">
                     <?php foreach ($users as $key => $user): ?>
                         <?php if ($user != $_SESSION['username']): ?>
                             <option value="<?= $key ?>"><?= $user ?></option>
@@ -83,6 +77,7 @@ $users = $db->getUserList();
                     <?php endforeach ?>
 
                 </select>
+                <div id="newMsgAlert" class="alert alert-success mx-sm-1 my-1" style="display: none"></div>
             </div>
         </div>
 
@@ -102,7 +97,6 @@ $users = $db->getUserList();
                 <div id="msgAlert" class="alert alert-danger col-lg-10 mx-sm-1 mt-2" style="display: none">
                     Enter Some message Please!
                 </div>
-                <div id="newMsgAlert" class="alert alert-success col-lg-10 mx-sm-1 mt-2" style="display: none;"></div>
             </div>
         </div>
     </div>
@@ -116,10 +110,6 @@ $users = $db->getUserList();
         websocket = new WebSocket(wsUri);
 
         websocket.onopen = function (ev) { // connection is open
-            $('#welcomeMsg').show();
-            $("#welcomeMsg").fadeTo(2000, 500).slideUp(500, function () {
-                $("#welcomeMsg").slideUp(500);
-            });
             get_message();
         };
 
@@ -148,7 +138,6 @@ $users = $db->getUserList();
             msgBox.show();
 
             websocket.onopen = function (ev) { // connection is open
-                $('#welcomeMsg').show();
                 get_message();
             };
         }
@@ -181,6 +170,9 @@ $users = $db->getUserList();
                     if (response.receiverId == user_id && response.senderId != receiver) {
                         $('#newMsgAlert').html('new message from ' + response.sender + '!');
                         $('#newMsgAlert').show();
+                        $("#newMsgAlert").fadeTo(2000, 500).slideUp(500, function () {
+                            $("#newMsgAlert").slideUp(500);
+                        });
                     }
                     if ((response.senderId == user_id && response.receiverId == receiver) ||
                         (response.senderId == receiver && response.receiverId == user_id)) {
